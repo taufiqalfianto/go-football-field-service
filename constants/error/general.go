@@ -2,29 +2,20 @@ package error
 
 import "errors"
 
-const (
-	InternalServerError = "internal_server_error"
-	BadRequest          = "bad_request"
-	Unauthorized        = "unauthorized"
-	NotFound            = "not_found"
-	Conflict            = "conflict"
-	Success             = "success"
-)
-
 var (
-	ErrServerInternalError = errors.New("internal server error")
-	ErrBadRequest          = errors.New("bad request")
+	ErrInternalServerError = errors.New("internal server error")
+	ErrSQLError            = errors.New("database server failed to execute query")
+	ErrTooManyRequests     = errors.New("too many requests")
 	ErrUnauthorized        = errors.New("unauthorized")
-	ErrNotFound            = errors.New("not found")
-	ErrConflict            = errors.New("conflict")
-	ErrSuccess             = errors.New("success")
+	ErrInvalidToken        = errors.New("invalid token")
+	ErrForbidden           = errors.New("forbidden")
 )
 
-var GeneralError = []error{
-	ErrServerInternalError,
-	ErrBadRequest,
+var GeneralErrors = []error{
+	ErrInternalServerError,
+	ErrSQLError,
+	ErrTooManyRequests,
 	ErrUnauthorized,
-	ErrNotFound,
-	ErrConflict,
-	ErrSuccess,
+	ErrInvalidToken,
+	ErrForbidden,
 }
