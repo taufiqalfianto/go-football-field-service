@@ -2,6 +2,6 @@ package constants
 
 const (
 	Admin   = 1
-	Cutomer = 2
+	Customer = 2
 )
  

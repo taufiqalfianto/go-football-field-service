@@ -10,7 +10,7 @@ import (
 )
 
 func InitDatabase() (*gorm.DB, error) {
-	config := config
+	config := Config
 
 	encodedPassword := url.QueryEscape(config.Database.Password)
 	uri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -32,10 +32,10 @@ func InitDatabase() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	sqlDB.SetMaxOpenConns(config.Database.MaxOpenConnection)
-	sqlDB.SetMaxIdleConns(config.Database.MaxIdleConnection)
+	sqlDB.SetMaxOpenConns(config.Database.MaxOpenConnections)
+	sqlDB.SetMaxIdleConns(config.Database.MaxIdleConnections)
 	sqlDB.SetConnMaxIdleTime(time.Duration(config.Database.MaxIdleTime) * time.Second)
-	sqlDB.SetConnMaxLifetime(time.Duration(config.Database.MaxLifetimeConnection) * time.Second)
+	sqlDB.SetConnMaxLifetime(time.Duration(config.Database.MaxLifeTimeConnection) * time.Second)
 
 	return db, nil
 }

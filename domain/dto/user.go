@@ -29,6 +29,7 @@ type UpdateRequest struct {
 
 type UserResponse struct {
 	UUID        uuid.UUID `json:"uuid"`
+	Username    string    `json:"username"`
 	Name        string    `json:"name"`
 	Role        string    `json:"role"`
 	PhoneNumber string    `json:"phoneNumber"`
