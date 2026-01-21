@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"net/url"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -12,13 +11,12 @@ import (
 func InitDatabase() (*gorm.DB, error) {
 	config := Config
 
-	encodedPassword := url.QueryEscape(config.Database.Password)
-	uri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
-		config.Database.Username,
-		encodedPassword,
+	uri := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta",
 		config.Database.Host,
-		config.Database.Port,
+		config.Database.Username,
+		config.Database.Password,
 		config.Database.Name,
+		config.Database.Port,
 	)
 
 	db, err := gorm.Open(postgres.Open(uri), &gorm.Config{})

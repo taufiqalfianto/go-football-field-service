@@ -20,8 +20,8 @@ type RegisterRequest struct {
 type UpdateRequest struct {
 	Name            string `json:"name" validate:"required"`
 	Username        string `json:"username" validate:"required"`
-	Password        string `json:"password,omitempty"`
-	ConfirmPassword string `json:"confirmPassword,omitempty"`
+	Password        *string `json:"password,omitempty"`
+	ConfirmPassword *string `json:"confirmPassword,omitempty"`
 	RoleId          uint
 	PhoneNumber     string `json:"phoneNumber" validate:"required"`
 	Email           string `json:"email" validate:"required,email "`

@@ -186,11 +186,11 @@ func (u *UserService) Update(ctx context.Context, request *dto.UpdateRequest, uu
 		}
 	}
 
-	if request.Password != "" {
-		if *&request.Password != *&request.ConfirmPassword {
+	if request.Password != nil {
+		if *request.Password != *request.ConfirmPassword {
 			return nil, errConstant.ErrPasswordDoesNotMatch
 		}
-		hashedPassword, err = bcrypt.GenerateFromPassword([]byte(*&request.Password), bcrypt.DefaultCost)
+		hashedPassword, err = bcrypt.GenerateFromPassword([]byte(*request.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return nil, err
 		}
@@ -200,7 +200,7 @@ func (u *UserService) Update(ctx context.Context, request *dto.UpdateRequest, uu
 	userResult, err = u.repository.GetUser().Update(ctx, &dto.UpdateRequest{
 		Name:        request.Name,
 		Username:    request.Username,
-		Password:    *&password,
+		Password:    &password,
 		Email:       request.Email,
 		PhoneNumber: request.PhoneNumber,
 	}, uuid)
