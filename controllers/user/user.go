@@ -4,6 +4,7 @@ import (
 	"net/http"
 	errWrap "user-service/common/error"
 	"user-service/common/response"
+	errConstant "user-service/constants/error"
 	"user-service/domain/dto"
 	"user-service/services"
 
@@ -32,7 +33,7 @@ func (u *UserController) Update(*gin.Context) {
 
 type IUserController interface {
 	Login(*gin.Context)
-	Register(*gin.Context)  
+	Register(*gin.Context)
 	Update(*gin.Context)
 	GetUserLogin(*gin.Context)
 	GetUserByUUID(*gin.Context)
@@ -120,8 +121,15 @@ func (u *UserController) Register(ctx *gin.Context) {
 
 	user, err := u.service.GetUser().Register(ctx, request)
 	if err != nil {
+		statusCode := http.StatusInternalServerError
+		if err == errConstant.ErrUsernameExist || err == errConstant.ErrEmailExist {
+			statusCode = http.StatusConflict
+		} else if err == errConstant.ErrPasswordDoesNotMatch {
+			statusCode = http.StatusBadRequest
+		}
+
 		response.HttpResponse(response.ParamHTTPResp{
-			Code: http.StatusInternalServerError,
+			Code: statusCode,
 			Err:  err,
 			Gin:  ctx,
 		})

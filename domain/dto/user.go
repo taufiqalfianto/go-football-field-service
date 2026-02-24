@@ -14,7 +14,7 @@ type RegisterRequest struct {
 	ConfirmPassword string `json:"confirmPassword" validate:"required"`
 	RoleId          uint
 	PhoneNumber     string `json:"phoneNumber" validate:"required"`
-	Email           string `json:"email" validate:"required,email "`
+	Email           string `json:"email" validate:"required,email"`
 }
 
 type UpdateRequest struct {
@@ -24,7 +24,7 @@ type UpdateRequest struct {
 	ConfirmPassword *string `json:"confirmPassword,omitempty"`
 	RoleId          uint
 	PhoneNumber     string `json:"phoneNumber" validate:"required"`
-	Email           string `json:"email" validate:"required,email "`
+	Email           string `json:"email" validate:"required,email"`
 }
 
 type UserResponse struct {
