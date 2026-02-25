@@ -51,7 +51,7 @@ func RateLimiter(lmt *limiter.Limiter) gin.HandlerFunc {
 }
 
 func extractBearerToken(token string) string {
-	arrayToken := strings.Split(token, "")
+	arrayToken := strings.Split(token, " ")
 	if len(arrayToken) == 2 {
 		return arrayToken[1]
 	}
@@ -112,6 +112,7 @@ func validateBearerToken(c *gin.Context, token string) error {
 
 	userLogin := c.Request.WithContext(context.WithValue(c.Request.Context(), constants.UserLogin, claims.User))
 	c.Request = userLogin
+	c.Set(constants.UserLogin, claims.User)
 	c.Set(constants.Token, tokenJwt)
 	return nil
 }
