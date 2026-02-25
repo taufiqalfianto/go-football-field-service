@@ -16,21 +16,6 @@ type UserController struct {
 	service services.IServiceRegistry
 }
 
-// GetUserByUUID implements [IUserController].
-func (u *UserController) GetUserByUUID(*gin.Context) {
-	panic("unimplemented")
-}
-
-// GetUserLogin implements [IUserController].
-func (u *UserController) GetUserLogin(*gin.Context) {
-	panic("unimplemented")
-}
-
-// Update implements [IUserController].
-func (u *UserController) Update(*gin.Context) {
-	panic("unimplemented")
-}
-
 type IUserController interface {
 	Login(*gin.Context)
 	Register(*gin.Context)
@@ -139,6 +124,109 @@ func (u *UserController) Register(ctx *gin.Context) {
 	response.HttpResponse(response.ParamHTTPResp{
 		Code: http.StatusOK,
 		Data: user.UserResponse,
+		Gin:  ctx,
+	})
+}
+
+// GetUserByUUID implements [IUserController].
+func (u *UserController) GetUserByUUID(ctx *gin.Context) {
+	uuid := ctx.Param("uuid")
+	user, err := u.service.GetUser().GetUserByUUID(ctx, uuid)
+	if err != nil {
+		statusCode := http.StatusInternalServerError
+		if err == errConstant.ErrUserNotFound {
+			statusCode = http.StatusNotFound
+		}
+		response.HttpResponse(response.ParamHTTPResp{
+			Code: statusCode,
+			Err:  err,
+			Gin:  ctx,
+		})
+		return
+	}
+
+	response.HttpResponse(response.ParamHTTPResp{
+		Code: http.StatusOK,
+		Data: user,
+		Gin:  ctx,
+	})
+}
+
+// GetUserLogin implements [IUserController].
+func (u *UserController) GetUserLogin(ctx *gin.Context) {
+	user, err := u.service.GetUser().GetUserLogin(ctx)
+	if err != nil {
+		statusCode := http.StatusInternalServerError
+		if err == errConstant.ErrUserNotFound {
+			statusCode = http.StatusNotFound
+		}
+		response.HttpResponse(response.ParamHTTPResp{
+			Code: statusCode,
+			Err:  err,
+			Gin:  ctx,
+		})
+		return
+	}
+
+	response.HttpResponse(response.ParamHTTPResp{
+		Code: http.StatusOK,
+		Data: user,
+		Gin:  ctx,
+	})
+}
+
+// Update implements [IUserController].
+func (u *UserController) Update(ctx *gin.Context) {
+	uuid := ctx.Param("uuid")
+	request := &dto.UpdateRequest{}
+
+	err := ctx.ShouldBindJSON(request)
+	if err != nil {
+		response.HttpResponse(response.ParamHTTPResp{
+			Code: http.StatusBadRequest,
+			Err:  err,
+			Gin:  ctx,
+		})
+		return
+	}
+
+	validate := validator.New()
+	err = validate.Struct(request)
+	if err != nil {
+		errMessage := http.StatusText(http.StatusUnprocessableEntity)
+		errResponse := errWrap.ErrValidationResponse(err)
+		response.HttpResponse(response.ParamHTTPResp{
+			Code:    http.StatusUnprocessableEntity,
+			Message: &errMessage,
+			Data:    errResponse,
+			Err:     err,
+			Gin:     ctx,
+		})
+		return
+	}
+
+	user, err := u.service.GetUser().Update(ctx, request, uuid)
+	if err != nil {
+		statusCode := http.StatusInternalServerError
+		if err == errConstant.ErrUserNotFound {
+			statusCode = http.StatusNotFound
+		} else if err == errConstant.ErrUsernameExist || err == errConstant.ErrEmailExist {
+			statusCode = http.StatusConflict
+		} else if err == errConstant.ErrPasswordDoesNotMatch {
+			statusCode = http.StatusBadRequest
+		}
+
+		response.HttpResponse(response.ParamHTTPResp{
+			Code: statusCode,
+			Err:  err,
+			Gin:  ctx,
+		})
+		return
+	}
+
+	response.HttpResponse(response.ParamHTTPResp{
+		Code: http.StatusOK,
+		Data: user,
 		Gin:  ctx,
 	})
 }
