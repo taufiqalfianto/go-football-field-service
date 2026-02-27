@@ -1,9 +1,36 @@
 name: booking-order-app # change this to your app name
 services:
-  user-service: # change this to your service name
-    container_name: user-service # change this to your service name
-    image: sikoding20/user-service # change this to your image name
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: barca1899
+      POSTGRES_DB: user_services
     ports:
-      - "8001:8001" # change this to your port
-    env_file:
-      - .env
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d user_services" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # user-service:
+  #   container_name: user-service
+  #   platform: linux/amd64
+  #   image: taufiqalfianto336/user-service:3
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8001:8001"
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+
+volumes:
+  postgres_data:
