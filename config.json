@@ -4,7 +4,7 @@
   "appEnv": "local",
   "signatureKey": "",
   "database": {
-    "host": "postgres",
+    "host": "localhost",
     "port": 5432,
     "name": "",
     "username": "",
