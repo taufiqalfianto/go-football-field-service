@@ -6,9 +6,9 @@
   "database": {
     "host": "localhost",
     "port": 5432,
-    "name": "user_services",
-    "username": "root",
-    "password": "barca1899",
+    "name": "",
+    "username": "",
+    "password": "",
     "maxOpenConnection": 10,
     "maxLifetimeConnection": 10,
     "maxIdleConnection": 10,
